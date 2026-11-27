@@ -1,0 +1,33 @@
+name: MinerCraft PSP
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: pspdev/pspdev:latest
+
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v7
+
+      - name: Make kur
+        run: apk add --no-cache make
+
+      - name: Derle
+        run: make
+
+      - name: PSP klasorunu hazirla
+        run: |
+          mkdir -p dist/PSP/GAME/MinerCraft
+          cp EBOOT.PBP dist/PSP/GAME/MinerCraft/
+
+      - name: Ciktiyi yukle
+        uses: actions/upload-artifact@v7
+        with:
+          name: MinerCraft-PSP
+          path: dist/
+          if-no-files-found: error
